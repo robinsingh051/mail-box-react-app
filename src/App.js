@@ -16,8 +16,12 @@ import FormatEmail from "./utils/FormatEmail";
 import axios from "axios";
 import { authActions } from "./store/auth";
 import toast from "react-hot-toast";
+import { emailActions } from "./store/email";
 
 function App() {
+  // const sentEmails = useSelector((state) => state.email.sentEmails);
+  // const recievedEmails = useSelector((state) => state.email.recievedEmails);
+  // console.log(sentEmails, recievedEmails);
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
@@ -25,7 +29,7 @@ function App() {
   useEffect(() => {
     const token = localStorage.getItem("token");
 
-    const validateUser = async (token) => {
+    const validateUserAndLoadData = async (token) => {
       if (token) {
         try {
           const res = await axios.post(
@@ -38,6 +42,38 @@ function App() {
               email: FormatEmail(res.data.users[0].email),
             })
           );
+          const sentEmailResponse = await axios.get(
+            `https://react-practice-9b982-default-rtdb.firebaseio.com/mails/${FormatEmail(
+              res.data.users[0].email
+            )}/sent.json`
+          );
+          const loadedSentEmails = [];
+          for (const key in sentEmailResponse.data) {
+            loadedSentEmails.push({
+              id: key,
+              content: sentEmailResponse.data[key].content,
+              from: sentEmailResponse.data[key].from,
+              to: sentEmailResponse.data[key].to,
+              subject: sentEmailResponse.data[key].subject,
+            });
+          }
+          dispatch(emailActions.setSentEmails(loadedSentEmails));
+          const recievedEmailResponse = await axios.get(
+            `https://react-practice-9b982-default-rtdb.firebaseio.com/mails/${FormatEmail(
+              res.data.users[0].email
+            )}/recieved.json`
+          );
+          const loadedRecievedEmails = [];
+          for (const key in recievedEmailResponse.data) {
+            loadedRecievedEmails.push({
+              id: key,
+              content: recievedEmailResponse.data[key].content,
+              from: recievedEmailResponse.data[key].from,
+              to: recievedEmailResponse.data[key].to,
+              subject: recievedEmailResponse.data[key].subject,
+            });
+          }
+          dispatch(emailActions.setRecievedEmails(loadedSentEmails));
           setLoading(false);
         } catch (error) {
           console.log(error);
@@ -47,7 +83,7 @@ function App() {
         setLoading(false);
       }
     };
-    validateUser(token);
+    validateUserAndLoadData(token);
   }, []);
 
   if (loading) return <Loading />;

@@ -9,6 +9,9 @@ import axios from "axios";
 import { emailActions } from "../store/email";
 
 const Compose = () => {
+  // const sentEmails = useSelector((state) => state.email.sentEmails);
+  // const recievedEmails = useSelector((state) => state.email.recievedEmails);
+  // console.log(sentEmails, recievedEmails);
   const dispatch = useDispatch();
   const senderEmail = useSelector((state) => state.auth.email);
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
@@ -57,16 +60,14 @@ const Compose = () => {
         )}/sent.json`,
         emailData
       );
-      const recievedEmailResponse = await axios.post(
+      await axios.post(
         `https://react-practice-9b982-default-rtdb.firebaseio.com/mails/${FormatEmail(
           recipientEmail
         )}/recieved.json`,
         emailData
       );
       toast.success("Email Sent Successfully");
-      // console.log(sendEmailResponse.data.name, recievedEmailResponse.data.name);
       emailData = { ...emailData, id: sendEmailResponse.data.name };
-      // console.log(emailData);
       dispatch(emailActions.addMailtoSentMails(emailData));
     } catch (err) {
       console.log(err);
@@ -75,33 +76,32 @@ const Compose = () => {
   };
 
   return (
-    <div>
-      <h1>Compose Mail</h1>
-      <form onSubmit={formSubmitHandler}>
-        <div className="form-group">
-          <label htmlFor="recipientEmail">To</label>
-          <input
-            type="email"
-            className="form-control"
-            id="recipientEmail"
-            placeholder="Enter recipient's email"
-            ref={recipientEmailRef}
-          />
-        </div>
+    <form onSubmit={formSubmitHandler}>
+      <div className="form-group">
+        <label htmlFor="recipientEmail">To</label>
+        <input
+          type="email"
+          className="form-control"
+          id="recipientEmail"
+          placeholder="Enter recipient's email"
+          ref={recipientEmailRef}
+        />
+      </div>
 
-        <div className="form-group">
-          <label htmlFor="emailSubject">Subject</label>
-          <input
-            type="text"
-            className="form-control"
-            id="emailSubject"
-            placeholder="Enter subject"
-            ref={subjectRef}
-          />
-        </div>
+      <div className="form-group">
+        <label htmlFor="emailSubject">Subject</label>
+        <input
+          type="text"
+          className="form-control"
+          id="emailSubject"
+          placeholder="Enter subject"
+          ref={subjectRef}
+        />
+      </div>
 
-        <div className="form-group">
-          <label>Compose</label>
+      <div className="form-group">
+        <label>Compose</label>
+        <div style={{ height: "300px" }}>
           <Editor
             editorState={editorState}
             wrapperClassName="demo-wrapper"
@@ -109,12 +109,12 @@ const Compose = () => {
             onEditorStateChange={onEditorStateChange}
           />
         </div>
+      </div>
 
-        <button type="submit" className="btn btn-primary">
-          Send
-        </button>
-      </form>
-    </div>
+      <button type="submit" className="btn btn-outline-primary">
+        Send
+      </button>
+    </form>
   );
 };
 
