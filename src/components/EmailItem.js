@@ -2,7 +2,7 @@ import React from "react";
 import { Card, Button } from "react-bootstrap";
 
 const EmailItem = (props) => {
-  const { email, onOpen, onDelete, darkMode } = props;
+  const { email, onOpen, onDelete } = props;
 
   const openHandler = (e) => {
     e.preventDefault();

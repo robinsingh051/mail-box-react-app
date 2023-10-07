@@ -7,12 +7,10 @@ import { useSelector, useDispatch } from "react-redux";
 import FormatEmail from "../utils/FormatEmail";
 import axios from "axios";
 import { emailActions } from "../store/email";
-import { useHistory } from "react-router-dom";
 import { BsArrowLeft } from "react-icons/bs";
 import { Button } from "react-bootstrap";
 
 const Compose = (props) => {
-  const history = useHistory();
   const dispatch = useDispatch();
   const senderEmail = useSelector((state) => state.auth.email);
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
@@ -77,7 +75,7 @@ const Compose = (props) => {
       toast.success("Email Sent Successfully");
       recievedEmail = { ...recievedEmail, id: sendEmailResponse.data.name };
       dispatch(emailActions.addMailtoSentMails(recievedEmail));
-      history.replace("/inbox");
+      props.onClose();
     } catch (err) {
       console.log(err);
       toast.error("Unable to send mail.");

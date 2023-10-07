@@ -35,20 +35,6 @@ const SentBox = (props) => {
   const emailOpenHandler = async (id) => {
     setSelectedEmail(sentEmails.find((email) => email.id === id));
     setOpenEmailState(true);
-    dispatch(emailActions.setSentEmailsRead(id));
-    try {
-      await axios.patch(
-        `https://react-practice-9b982-default-rtdb.firebaseio.com/mails/${FormatEmail(
-          userEmail
-        )}/sent/${id}.json`,
-        {
-          isRead: true,
-        }
-      );
-    } catch (err) {
-      console.log(err);
-      toast.error("Something went wrong");
-    }
   };
 
   const backHandler = () => {

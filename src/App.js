@@ -17,14 +17,18 @@ import axios from "axios";
 import { authActions } from "./store/auth";
 import toast from "react-hot-toast";
 import { emailActions } from "./store/email";
-import { BsArrowLeft, BsPencilSquare } from "react-icons/bs";
+import { BsPencilSquare } from "react-icons/bs";
 import { Button } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
+import { getDatabase, ref, onChildAdded } from "firebase/database";
+import "firebase/database";
+import firebaseApp from "./utils/firebase";
 
 function App() {
   const history = useHistory();
   const [openCompose, setOpenCompose] = useState(false);
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const userEmail = useSelector((state) => state.auth.email);
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
   // useffect for user validation
@@ -41,7 +45,7 @@ function App() {
           dispatch(
             authActions.login({
               token: token,
-              email: FormatEmail(res.data.users[0].email),
+              email: res.data.users[0].email,
             })
           );
           const sentEmailResponse = await axios.get(
@@ -89,6 +93,25 @@ function App() {
     };
     validateUserAndLoadData(token);
   }, []);
+
+  useEffect(() => {
+    const database = getDatabase(firebaseApp); // Pass firebaseApp to getDatabase
+
+    const newNodeRef = ref(
+      database,
+      `/mails/${FormatEmail(userEmail)}/recieved`
+    );
+
+    const unsubscribe = onChildAdded(newNodeRef, (snapshot) => {
+      let newNodeData = snapshot.val();
+      newNodeData = { ...newNodeData, id: snapshot.key };
+      dispatch(emailActions.addMailtoRecievedMails(newNodeData));
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, [userEmail]);
 
   const openComposeHandler = () => {
     setOpenCompose(true);
@@ -156,7 +179,7 @@ function App() {
               right: "30px",
             }}
           >
-            <Button variant="outline-dark" onClick={openComposeHandler}>
+            <Button variant="dark" onClick={openComposeHandler}>
               <BsPencilSquare style={{ marginLeft: "5px" }} /> Compose
             </Button>
           </div>

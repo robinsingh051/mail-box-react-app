@@ -1,13 +1,15 @@
 import React from "react";
-import { Nav } from "react-bootstrap";
+import { Nav, Badge } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 const SideNavBar = (props) => {
+  const unreadMails = useSelector((state) => state.email.unreadMails);
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
 
   const activeLinkStyle = {
-    color: "black", // Change this to the desired text color
+    color: "black",
+    fontWeight: "bold",
   };
 
   return (
@@ -19,7 +21,12 @@ const SideNavBar = (props) => {
           variant="primary"
           activeStyle={activeLinkStyle}
         >
-          InBox
+          InBox{" "}
+          {unreadMails > 0 && (
+            <Badge bg="info" pill>
+              {unreadMails}
+            </Badge>
+          )}
         </NavLink>
       )}
       {isLoggedIn && (
