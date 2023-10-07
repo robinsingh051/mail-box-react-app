@@ -6,6 +6,7 @@ import { emailActions } from "../store/email";
 import axios from "axios";
 import FormatEmail from "../utils/FormatEmail";
 import toast from "react-hot-toast";
+import NoEmailFound from "./NoEmailFound";
 
 const Inbox = (props) => {
   const userEmail = useSelector((state) => state.auth.email);
@@ -26,7 +27,7 @@ const Inbox = (props) => {
     setOpenEmailState(true);
     dispatch(emailActions.setRecievedEmailsRead(id));
     try {
-      const res = axios.put(
+      const res = axios.patch(
         `https://react-practice-9b982-default-rtdb.firebaseio.com/mails/${FormatEmail(
           userEmail
         )}/recieved/${id}.json`,
@@ -44,6 +45,10 @@ const Inbox = (props) => {
     setSelectedEmail(null);
     setOpenEmailState(false);
   };
+
+  if (recievedEmails.length === 0) {
+    return <NoEmailFound />;
+  }
 
   return (
     <>
