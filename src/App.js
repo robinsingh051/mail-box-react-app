@@ -55,6 +55,7 @@ function App() {
               from: sentEmailResponse.data[key].from,
               to: sentEmailResponse.data[key].to,
               subject: sentEmailResponse.data[key].subject,
+              isRead: sentEmailResponse.data[key].isRead,
             });
           }
           dispatch(emailActions.setSentEmails(loadedSentEmails));
@@ -71,9 +72,10 @@ function App() {
               from: recievedEmailResponse.data[key].from,
               to: recievedEmailResponse.data[key].to,
               subject: recievedEmailResponse.data[key].subject,
+              isRead: recievedEmailResponse.data[key].isRead,
             });
           }
-          dispatch(emailActions.setRecievedEmails(loadedSentEmails));
+          dispatch(emailActions.setRecievedEmails(loadedRecievedEmails));
           setLoading(false);
         } catch (error) {
           console.log(error);

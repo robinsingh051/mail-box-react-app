@@ -14,15 +14,12 @@ const EmailItem = (props) => {
     onDelete(email.id);
   };
 
+  const cardStyle = {
+    backgroundColor: email.isRead ? "" : "#fde2e2",
+  };
+
   return (
-    <Card
-      onClick={openHandler}
-      className="mb-2"
-      style={{
-        backgroundColor: darkMode ? "black" : "white",
-        color: darkMode ? "white" : "black",
-      }}
-    >
+    <Card onClick={openHandler} className="mb-2" style={cardStyle}>
       <Card.Body className="d-flex justify-content-between align-items-center">
         <div>
           <Card.Title>{email.subject}</Card.Title>

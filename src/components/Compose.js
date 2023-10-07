@@ -50,6 +50,7 @@ const Compose = () => {
       from: senderEmail,
       subject: subject,
       content: editorText,
+      isRead: false,
     };
     console.log(emailData);
 

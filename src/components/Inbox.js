@@ -1,32 +1,59 @@
 import React, { useState } from "react";
 import EmailList from "./EmailList";
-import openEmail from "./openEmail"; // You should import your openEmail component as needed
-import { useSelector } from "react-redux";
+import OpenEmail from "./OpenEmail"; // You should import your openEmail component as needed
+import { useSelector, useDispatch } from "react-redux";
+import { emailActions } from "../store/email";
+import axios from "axios";
+import FormatEmail from "../utils/FormatEmail";
+import toast from "react-hot-toast";
 
 const Inbox = (props) => {
-  // const sentEmails = useSelector((state) => state.email.sentEmails);
+  const userEmail = useSelector((state) => state.auth.email);
+  const dispatch = useDispatch();
   const recievedEmails = useSelector((state) => state.email.recievedEmails);
-  // console.log("re", recievedEmails);
-  // console.log("se", sentEmails);
 
   const [openEmailState, setOpenEmailState] = useState(false);
   const [selectedEmail, setSelectedEmail] = useState(null);
 
   const deleteEmailHandler = (id) => {
-    // Implement the logic to delete an email with the given id
-    // Update the receivedEmails state accordingly
+    dispatch(emailActions.deleteMailfromRecievedMails(id));
+    backHandler();
     console.log("Deleted email with ID:", id);
   };
 
-  const emailOpenHandler = (id) => {
-    console.log(id);
+  const emailOpenHandler = async (id) => {
     setSelectedEmail(recievedEmails.find((email) => email.id === id));
-    // setOpenEmailState(true);
+    setOpenEmailState(true);
+    dispatch(emailActions.setRecievedEmailsRead(id));
+    try {
+      const res = axios.put(
+        `https://react-practice-9b982-default-rtdb.firebaseio.com/mails/${FormatEmail(
+          userEmail
+        )}/recieved/${id}.json`,
+        {
+          isRead: true,
+        }
+      );
+    } catch (err) {
+      console.log(err);
+      toast.error("Something went wrong");
+    }
+  };
+
+  const backHandler = () => {
+    setSelectedEmail(null);
+    setOpenEmailState(false);
   };
 
   return (
     <>
-      {openEmailState && <openEmail email={selectedEmail} />}
+      {openEmailState && (
+        <OpenEmail
+          onBack={backHandler}
+          onDelete={deleteEmailHandler}
+          email={selectedEmail}
+        />
+      )}
       {!openEmailState && (
         <EmailList
           emails={recievedEmails}

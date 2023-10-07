@@ -21,6 +21,26 @@ const emailSlice = createSlice({
     addMailtoRecievedMails(state, action) {
       state.recievedEmails.push(action.payload);
     },
+    deleteMailfromRecievedMails(state, action) {
+      state.recievedEmails = state.recievedEmails.filter(
+        (mail) => mail.id !== action.payload
+      );
+    },
+    deleteMailfromSentMails(state, action) {
+      state.sentEmails = state.sentEmails.filter(
+        (mail) => mail.id !== action.payload
+      );
+    },
+    setRecievedEmailsRead(state, action) {
+      const m = state.recievedEmails.filter(
+        (mail) => mail.id === action.payload
+      );
+      m[0].isRead = true;
+    },
+    setSentEmailsRead(state, action) {
+      const m = state.sentEmails.filter((mail) => mail.id === action.payload);
+      m[0].isRead = true;
+    },
   },
 });
 
