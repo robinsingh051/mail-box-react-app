@@ -1,9 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { Button, Container } from "react-bootstrap";
-import axios from "axios";
-import Loading from "../UI/Loading";
-import toast from "react-hot-toast";
-import { useDispatch, useSelector } from "react-redux";
+import React from "react";
 
 const Home = (props) => {
   // const [loading, setLoading] = useState(true);
@@ -13,11 +8,10 @@ const Home = (props) => {
   // if (loading) return <Loading />;
 
   return (
-    <>
-      <Container className="d-flex justify-content-center align-items-center mt-5">
-        <h1>Home</h1>
-      </Container>
-    </>
+    <div>
+      <h1>Home</h1>
+      <p>dzhfbcvbdfhdfcb cbgnc bxc</p>
+    </div>
   );
 };
 

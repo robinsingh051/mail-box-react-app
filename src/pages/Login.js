@@ -17,10 +17,6 @@ const Login = () => {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  function removeSpecialCharacters(email) {
-    return email.replace(/[.@]/g, "");
-  }
-
   const submitHandler = async (event) => {
     event.preventDefault();
     const enteredEmail = emailInputRef.current.value;
@@ -41,19 +37,10 @@ const Login = () => {
       dispatch(
         authActions.login({
           token: response.data.idToken,
-          email: removeSpecialCharacters(enteredEmail),
+          email: enteredEmail,
         })
       );
-      // const res = await axios.get(
-      //   `https://react-practice-9b982-default-rtdb.firebaseio.com/expenses/${removeSpecialCharacters(
-      //     enteredEmail
-      //   )}/premium.json`
-      // );
-      // console.log(res.data);
-      // if (res.data) {
-      //   dispatch(authActions.setPremium(true));
-      // }
-      history.replace("/home");
+      history.replace("/");
     } catch (err) {
       let errorMessage = "User doesn't exist";
       if (err.response.data.error && err.response.data.error.message)
