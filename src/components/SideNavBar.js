@@ -14,16 +14,6 @@ const SideNavBar = (props) => {
     <Nav className="flex-column" style={{ backgroundColor: "transparent" }}>
       {isLoggedIn && (
         <NavLink
-          to="/compose"
-          className="nav-link"
-          variant="primary"
-          activeStyle={activeLinkStyle}
-        >
-          Compose Mail
-        </NavLink>
-      )}
-      {isLoggedIn && (
-        <NavLink
           to="/inbox"
           className="nav-link"
           variant="primary"

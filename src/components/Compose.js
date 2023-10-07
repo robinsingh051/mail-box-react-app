@@ -7,11 +7,12 @@ import { useSelector, useDispatch } from "react-redux";
 import FormatEmail from "../utils/FormatEmail";
 import axios from "axios";
 import { emailActions } from "../store/email";
+import { useHistory } from "react-router-dom";
+import { BsArrowLeft } from "react-icons/bs";
+import { Button } from "react-bootstrap";
 
-const Compose = () => {
-  // const sentEmails = useSelector((state) => state.email.sentEmails);
-  // const recievedEmails = useSelector((state) => state.email.recievedEmails);
-  // console.log(sentEmails, recievedEmails);
+const Compose = (props) => {
+  const history = useHistory();
   const dispatch = useDispatch();
   const senderEmail = useSelector((state) => state.auth.email);
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
@@ -52,14 +53,20 @@ const Compose = () => {
       content: editorText,
       isRead: false,
     };
-    console.log(emailData);
+    let recievedEmail = {
+      to: recipientEmail,
+      from: senderEmail,
+      subject: subject,
+      content: editorText,
+      isRead: true,
+    };
 
     try {
       const sendEmailResponse = await axios.post(
         `https://react-practice-9b982-default-rtdb.firebaseio.com/mails/${FormatEmail(
           senderEmail
         )}/sent.json`,
-        emailData
+        recievedEmail
       );
       await axios.post(
         `https://react-practice-9b982-default-rtdb.firebaseio.com/mails/${FormatEmail(
@@ -68,8 +75,9 @@ const Compose = () => {
         emailData
       );
       toast.success("Email Sent Successfully");
-      emailData = { ...emailData, id: sendEmailResponse.data.name };
-      dispatch(emailActions.addMailtoSentMails(emailData));
+      recievedEmail = { ...recievedEmail, id: sendEmailResponse.data.name };
+      dispatch(emailActions.addMailtoSentMails(recievedEmail));
+      history.replace("/inbox");
     } catch (err) {
       console.log(err);
       toast.error("Unable to send mail.");
@@ -77,45 +85,58 @@ const Compose = () => {
   };
 
   return (
-    <form onSubmit={formSubmitHandler}>
-      <div className="form-group">
-        <label htmlFor="recipientEmail">To</label>
-        <input
-          type="email"
-          className="form-control"
-          id="recipientEmail"
-          placeholder="Enter recipient's email"
-          ref={recipientEmailRef}
-        />
-      </div>
-
-      <div className="form-group">
-        <label htmlFor="emailSubject">Subject</label>
-        <input
-          type="text"
-          className="form-control"
-          id="emailSubject"
-          placeholder="Enter subject"
-          ref={subjectRef}
-        />
-      </div>
-
-      <div className="form-group">
-        <label>Compose</label>
-        <div style={{ height: "300px" }}>
-          <Editor
-            editorState={editorState}
-            wrapperClassName="demo-wrapper"
-            editorClassName="demo-editor"
-            onEditorStateChange={onEditorStateChange}
+    <div className="mt-4">
+      <Button
+        variant="link"
+        onClick={props.onClose}
+        style={{
+          position: "absolute",
+          top: "60px",
+          right: "20px",
+        }}
+      >
+        <BsArrowLeft style={{ marginRight: "5px" }} /> Back
+      </Button>
+      <form onSubmit={formSubmitHandler}>
+        <div className="form-group mb-2">
+          <label htmlFor="recipientEmail">To</label>
+          <input
+            type="email"
+            className="form-control"
+            id="recipientEmail"
+            placeholder="Enter recipient's email"
+            ref={recipientEmailRef}
           />
         </div>
-      </div>
 
-      <button type="submit" className="btn btn-outline-primary">
-        Send
-      </button>
-    </form>
+        <div className="form-group mb-2">
+          <label htmlFor="emailSubject">Subject</label>
+          <input
+            type="text"
+            className="form-control"
+            id="emailSubject"
+            placeholder="Enter subject"
+            ref={subjectRef}
+          />
+        </div>
+
+        <div className="form-group mb-2">
+          <label>Compose</label>
+          <div style={{ height: "300px" }}>
+            <Editor
+              editorState={editorState}
+              wrapperClassName="demo-wrapper"
+              editorClassName="demo-editor"
+              onEditorStateChange={onEditorStateChange}
+            />
+          </div>
+        </div>
+
+        <button type="submit" className="btn btn-outline-primary">
+          Send
+        </button>
+      </form>
+    </div>
   );
 };
 

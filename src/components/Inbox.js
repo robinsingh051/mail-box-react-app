@@ -16,10 +16,20 @@ const Inbox = (props) => {
   const [openEmailState, setOpenEmailState] = useState(false);
   const [selectedEmail, setSelectedEmail] = useState(null);
 
-  const deleteEmailHandler = (id) => {
-    dispatch(emailActions.deleteMailfromRecievedMails(id));
-    backHandler();
-    console.log("Deleted email with ID:", id);
+  const deleteEmailHandler = async (id) => {
+    try {
+      await axios.delete(
+        `https://react-practice-9b982-default-rtdb.firebaseio.com/mails/${FormatEmail(
+          userEmail
+        )}/recieved/${id}.json`
+      );
+      toast.success("Mail delete successfully");
+    } catch (err) {
+      console.log(err);
+      toast.error("Something went wrong");
+      dispatch(emailActions.deleteMailfromRecievedMails(id));
+      backHandler();
+    }
   };
 
   const emailOpenHandler = async (id) => {
@@ -27,7 +37,7 @@ const Inbox = (props) => {
     setOpenEmailState(true);
     dispatch(emailActions.setRecievedEmailsRead(id));
     try {
-      const res = axios.patch(
+      await axios.patch(
         `https://react-practice-9b982-default-rtdb.firebaseio.com/mails/${FormatEmail(
           userEmail
         )}/recieved/${id}.json`,

@@ -17,11 +17,13 @@ import axios from "axios";
 import { authActions } from "./store/auth";
 import toast from "react-hot-toast";
 import { emailActions } from "./store/email";
+import { BsArrowLeft, BsPencilSquare } from "react-icons/bs";
+import { Button } from "react-bootstrap";
+import { useHistory } from "react-router-dom";
 
 function App() {
-  // const sentEmails = useSelector((state) => state.email.sentEmails);
-  // const recievedEmails = useSelector((state) => state.email.recievedEmails);
-  // console.log(sentEmails, recievedEmails);
+  const history = useHistory();
+  const [openCompose, setOpenCompose] = useState(false);
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
@@ -88,6 +90,16 @@ function App() {
     validateUserAndLoadData(token);
   }, []);
 
+  const openComposeHandler = () => {
+    setOpenCompose(true);
+    history.push("/compose");
+  };
+
+  const closeComposeHandler = () => {
+    setOpenCompose(false);
+    history.push("/inbox");
+  };
+
   if (loading) return <Loading />;
 
   return (
@@ -119,7 +131,7 @@ function App() {
                 {!isLoggedIn && <Redirect to="/login" />}
               </Route>
               <Route path="/compose">
-                {isLoggedIn && <Compose />}
+                {isLoggedIn && <Compose onClose={closeComposeHandler} />}
                 {!isLoggedIn && <Redirect to="/login" />}
               </Route>
               <Route path="/login">
@@ -136,6 +148,19 @@ function App() {
             </Switch>
           </Col>
         </Row>
+        {isLoggedIn && !openCompose && (
+          <div
+            style={{
+              position: "fixed",
+              bottom: "40px",
+              right: "30px",
+            }}
+          >
+            <Button variant="outline-dark" onClick={openComposeHandler}>
+              <BsPencilSquare style={{ marginLeft: "5px" }} /> Compose
+            </Button>
+          </div>
+        )}
       </Container>
     </div>
   );
