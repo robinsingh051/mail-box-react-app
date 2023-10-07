@@ -44,15 +44,15 @@ const Login = () => {
           email: removeSpecialCharacters(enteredEmail),
         })
       );
-      const res = await axios.get(
-        `https://react-practice-9b982-default-rtdb.firebaseio.com/expenses/${removeSpecialCharacters(
-          enteredEmail
-        )}/premium.json`
-      );
-      console.log(res.data);
-      if (res.data) {
-        dispatch(authActions.setPremium(true));
-      }
+      // const res = await axios.get(
+      //   `https://react-practice-9b982-default-rtdb.firebaseio.com/expenses/${removeSpecialCharacters(
+      //     enteredEmail
+      //   )}/premium.json`
+      // );
+      // console.log(res.data);
+      // if (res.data) {
+      //   dispatch(authActions.setPremium(true));
+      // }
       history.replace("/home");
     } catch (err) {
       let errorMessage = "User doesn't exist";
