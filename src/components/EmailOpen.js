@@ -2,7 +2,7 @@ import React from "react";
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import { BsTrash, BsArrowLeft } from "react-icons/bs"; // Import the delete and back icons
 
-const OpenEmail = (props) => {
+const EmailOpen = (props) => {
   const { email, onDelete, onBack } = props;
 
   const deleteHandler = () => {
@@ -57,4 +57,4 @@ const OpenEmail = (props) => {
   );
 };
 
-export default OpenEmail;
+export default EmailOpen;

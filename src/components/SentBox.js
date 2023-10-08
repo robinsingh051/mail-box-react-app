@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import EmailList from "./EmailList";
-import OpenEmail from "./OpenEmail";
+import EmailOpen from "./EmailOpen";
 import { useSelector, useDispatch } from "react-redux";
 import { emailActions } from "../store/email";
 import axios from "axios";
@@ -49,7 +49,7 @@ const SentBox = (props) => {
   return (
     <>
       {openEmailState && (
-        <OpenEmail
+        <EmailOpen
           onBack={backHandler}
           onDelete={deleteEmailHandler}
           email={selectedEmail}
