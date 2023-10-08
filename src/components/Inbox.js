@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import EmailList from "./EmailList";
-import OpenEmail from "./OpenEmail"; // You should import your openEmail component as needed
+import OpenEmail from "./OpenEmail";
 import { useSelector, useDispatch } from "react-redux";
 import { emailActions } from "../store/email";
 import axios from "axios";
