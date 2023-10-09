@@ -26,7 +26,7 @@ const Header = (props) => {
 
   return (
     <Navbar bg="dark" variant="dark" className="mb-3">
-      <Navbar.Brand href="/" style={{ marginLeft: "1rem" }}>
+      <Navbar.Brand style={{ marginLeft: "1rem" }}>
         <BsEnvelope className="me-2" /> Mailbox
       </Navbar.Brand>
       <Container>
